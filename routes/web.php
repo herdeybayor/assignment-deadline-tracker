@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\AssignmentController;
+use App\Models\Assignment;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 Route::get('/', function () {
@@ -10,7 +12,28 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
+        $user = Auth::user();
+        
+        // Get assignments data
+        $assignments = $user->assignments()
+            ->byPriority()
+            ->pending()
+            ->limit(5)
+            ->get()
+            ->makeHidden(['created_at', 'updated_at']);
+
+        // Calculate statistics
+        $stats = [
+            'total' => $user->assignments()->count(),
+            'pending' => $user->assignments()->pending()->count(),
+            'overdue' => $user->assignments()->overdue()->count(),
+            'due_soon' => $user->assignments()->dueSoon(7)->count(),
+        ];
+
+        return Inertia::render('dashboard', [
+            'assignments' => ['data' => $assignments],
+            'stats' => $stats,
+        ]);
     })->name('dashboard');
 
     // Assignment routes
