@@ -173,7 +173,7 @@ export default function AssignmentEdit({ assignment }: AssignmentEditProps) {
                                             <select
                                                 id="priority_level"
                                                 value={data.priority_level}
-                                                onChange={(e) => setData('priority_level', e.target.value as any)}
+                                                onChange={(e) => setData('priority_level', e.target.value as Assignment['priority_level'])}
                                                 className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
                                             >
                                                 <option value="low">🟢 Low Priority</option>
@@ -189,7 +189,7 @@ export default function AssignmentEdit({ assignment }: AssignmentEditProps) {
                                             <select
                                                 id="status"
                                                 value={data.status}
-                                                onChange={(e) => setData('status', e.target.value as any)}
+                                                onChange={(e) => setData('status', e.target.value as Assignment['status'])}
                                                 className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
                                             >
                                                 <option value="not_started">📋 Not Started</option>

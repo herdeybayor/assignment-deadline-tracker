@@ -48,7 +48,7 @@ export default function AssignmentShow({ assignment }: AssignmentShowProps) {
         },
     ];
 
-    const { data, setData, patch, processing } = useForm({
+    const { data, setData, processing } = useForm({
         status: assignment.status,
         completion_notes: assignment.completion_notes || '',
     });
@@ -93,21 +93,27 @@ export default function AssignmentShow({ assignment }: AssignmentShowProps) {
     };
 
     const updateStatus = (newStatus: string) => {
-        patch(route('assignments.status', assignment.id), {
-            data: { status: newStatus },
-            preserveScroll: true,
-        });
+        router.patch(
+            route('assignments.status', assignment.id),
+            { status: newStatus },
+            {
+                preserveScroll: true,
+            },
+        );
     };
 
     const handleComplete = () => {
         if (data.status === 'completed') {
-            patch(route('assignments.status', assignment.id), {
-                data: {
+            router.patch(
+                route('assignments.status', assignment.id),
+                {
                     status: 'completed',
                     completion_notes: data.completion_notes,
                 },
-                preserveScroll: true,
-            });
+                {
+                    preserveScroll: true,
+                },
+            );
         } else {
             updateStatus('completed');
         }
@@ -257,7 +263,7 @@ export default function AssignmentShow({ assignment }: AssignmentShowProps) {
                                     <select
                                         value={data.status}
                                         onChange={(e) => {
-                                            setData('status', e.target.value as any);
+                                            setData('status', e.target.value as Assignment['status']);
                                             updateStatus(e.target.value);
                                         }}
                                         className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
@@ -299,13 +305,16 @@ export default function AssignmentShow({ assignment }: AssignmentShowProps) {
                                                 />
                                                 <Button
                                                     onClick={() => {
-                                                        patch(route('assignments.update', assignment.id), {
-                                                            data: {
+                                                        router.patch(
+                                                            route('assignments.update', assignment.id),
+                                                            {
                                                                 ...assignment,
                                                                 completion_notes: data.completion_notes,
                                                             },
-                                                            onSuccess: () => setShowCompletionNotes(false),
-                                                        });
+                                                            {
+                                                                onSuccess: () => setShowCompletionNotes(false),
+                                                            },
+                                                        );
                                                     }}
                                                     disabled={processing}
                                                     size="sm"
