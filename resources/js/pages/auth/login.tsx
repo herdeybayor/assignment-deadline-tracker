@@ -36,32 +36,35 @@ export default function Login({ status, canResetPassword }: LoginProps) {
     };
 
     return (
-        <AuthLayout title="Log in to your account" description="Enter your email and password below to log in">
-            <Head title="Log in" />
+        <AuthLayout title="Welcome back, LASU student!" description="Log in to track your assignments and never miss another deadline">
+            <Head title="Log in - Assignment Deadline Tracker" />
+
+            {status && <div className="mb-4 text-sm font-medium text-green-600 dark:text-green-400">{status}</div>}
 
             <form className="flex flex-col gap-6" onSubmit={submit}>
                 <div className="grid gap-6">
                     <div className="grid gap-2">
-                        <Label htmlFor="email">Email address</Label>
+                        <Label htmlFor="email">Student Email Address</Label>
                         <Input
                             id="email"
                             type="email"
                             required
                             autoFocus
                             tabIndex={1}
-                            autoComplete="email"
+                            autoComplete="username"
                             value={data.email}
                             onChange={(e) => setData('email', e.target.value)}
-                            placeholder="email@example.com"
+                            disabled={processing}
+                            placeholder="your.email@student.lasu.edu.ng"
                         />
                         <InputError message={errors.email} />
                     </div>
 
                     <div className="grid gap-2">
-                        <div className="flex items-center">
+                        <div className="flex items-center justify-between">
                             <Label htmlFor="password">Password</Label>
                             {canResetPassword && (
-                                <TextLink href={route('password.request')} className="ml-auto text-sm" tabIndex={5}>
+                                <TextLink className="text-sm underline" href={route('password.request')} tabIndex={4}>
                                     Forgot password?
                                 </TextLink>
                             )}
@@ -74,37 +77,46 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             autoComplete="current-password"
                             value={data.password}
                             onChange={(e) => setData('password', e.target.value)}
-                            placeholder="Password"
+                            disabled={processing}
+                            placeholder="Enter your password"
                         />
                         <InputError message={errors.password} />
                     </div>
 
-                    <div className="flex items-center space-x-3">
+                    <div className="flex items-center space-x-2">
                         <Checkbox
                             id="remember"
-                            name="remember"
                             checked={data.remember}
-                            onClick={() => setData('remember', !data.remember)}
+                            onCheckedChange={(checked) => setData('remember', checked as boolean)}
                             tabIndex={3}
+                            disabled={processing}
                         />
-                        <Label htmlFor="remember">Remember me</Label>
+                        <Label
+                            htmlFor="remember"
+                            className="text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        >
+                            Remember me on this device
+                        </Label>
                     </div>
-
-                    <Button type="submit" className="mt-4 w-full" tabIndex={4} disabled={processing}>
-                        {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
-                        Log in
-                    </Button>
                 </div>
 
-                <div className="text-center text-sm text-muted-foreground">
-                    Don't have an account?{' '}
-                    <TextLink href={route('register')} tabIndex={5}>
-                        Sign up
-                    </TextLink>
-                </div>
+                <Button type="submit" disabled={processing} tabIndex={5}>
+                    {processing && <LoaderCircle className="animate-spin" />}
+                    Sign in to your account
+                </Button>
             </form>
 
-            {status && <div className="mb-4 text-center text-sm font-medium text-green-600">{status}</div>}
+            <div className="text-center text-sm">
+                <span className="text-gray-600 dark:text-gray-400">New to LASU Assignment Tracker? </span>
+                <TextLink href={route('register')} className="underline">
+                    Create your account
+                </TextLink>
+            </div>
+
+            <div className="mt-4 text-center text-xs text-gray-500 dark:text-gray-400">
+                <p>🎓 Built specifically for Lagos State University students</p>
+                <p>Stay on top of your assignments, projects, and deadlines</p>
+            </div>
         </AuthLayout>
     );
 }
