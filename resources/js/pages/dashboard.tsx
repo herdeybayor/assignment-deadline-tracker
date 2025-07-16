@@ -102,40 +102,56 @@ export default function Dashboard({ assignments, stats }: DashboardProps) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Dashboard" />
+            <Head title="Dashboard - LASU Assignment Tracker" />
             <div className="flex h-full flex-1 flex-col gap-6 overflow-x-auto rounded-xl p-6">
+                {/* Welcome Message */}
+                <div className="rounded-lg bg-gradient-to-r from-blue-50 to-indigo-50 p-6 dark:from-gray-800 dark:to-gray-700">
+                    <h1 className="mb-2 text-2xl font-bold text-gray-900 dark:text-white">Welcome to your Assignment Dashboard! 🎓</h1>
+                    <p className="text-gray-600 dark:text-gray-300">
+                        Stay on top of your Lagos State University assignments and never miss a deadline again.
+                    </p>
+                </div>
+
                 {/* Stats Overview */}
                 <div className="grid auto-rows-min gap-4 md:grid-cols-4">
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">Total Assignments</CardTitle>
+                            <span className="text-2xl">📚</span>
                         </CardHeader>
                         <CardContent>
                             <div className="text-2xl font-bold">{stats?.total || 0}</div>
+                            <p className="text-xs text-gray-500">All time</p>
                         </CardContent>
                     </Card>
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">Pending</CardTitle>
+                            <span className="text-2xl">⏳</span>
                         </CardHeader>
                         <CardContent>
                             <div className="text-2xl font-bold text-blue-600">{stats?.pending || 0}</div>
+                            <p className="text-xs text-gray-500">Active tasks</p>
                         </CardContent>
                     </Card>
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">Overdue</CardTitle>
+                            <span className="text-2xl">🚨</span>
                         </CardHeader>
                         <CardContent>
                             <div className="text-2xl font-bold text-red-600">{stats?.overdue || 0}</div>
+                            <p className="text-xs text-gray-500">Need attention</p>
                         </CardContent>
                     </Card>
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">Due Soon</CardTitle>
+                            <span className="text-2xl">⚡</span>
                         </CardHeader>
                         <CardContent>
                             <div className="text-2xl font-bold text-orange-600">{stats?.due_soon || 0}</div>
+                            <p className="text-xs text-gray-500">Within 7 days</p>
                         </CardContent>
                     </Card>
                 </div>
@@ -144,9 +160,12 @@ export default function Dashboard({ assignments, stats }: DashboardProps) {
                 <Card>
                     <CardHeader>
                         <div className="flex items-center justify-between">
-                            <CardTitle>Quick Add Assignment</CardTitle>
+                            <CardTitle className="flex items-center gap-2">
+                                <span>📝</span>
+                                Quick Add Assignment
+                            </CardTitle>
                             <Button onClick={() => setShowQuickAdd(!showQuickAdd)} variant={showQuickAdd ? 'secondary' : 'default'}>
-                                {showQuickAdd ? 'Cancel' : 'Add Assignment'}
+                                {showQuickAdd ? 'Cancel' : '+ Add Assignment'}
                             </Button>
                         </div>
                     </CardHeader>
@@ -155,12 +174,12 @@ export default function Dashboard({ assignments, stats }: DashboardProps) {
                             <form onSubmit={handleSubmit} className="space-y-4">
                                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                                     <div>
-                                        <Label htmlFor="title">Assignment Title</Label>
+                                        <Label htmlFor="title">Assignment Title *</Label>
                                         <Input
                                             id="title"
                                             value={data.title}
                                             onChange={(e) => setData('title', e.target.value)}
-                                            placeholder="e.g., Math Homework Chapter 5"
+                                            placeholder="e.g., CSC 301 Final Project"
                                             required
                                         />
                                         {errors.title && <p className="mt-1 text-sm text-red-500">{errors.title}</p>}
@@ -171,11 +190,11 @@ export default function Dashboard({ assignments, stats }: DashboardProps) {
                                             id="subject"
                                             value={data.subject}
                                             onChange={(e) => setData('subject', e.target.value)}
-                                            placeholder="e.g., Mathematics, CSC 301"
+                                            placeholder="e.g., Computer Science, MTH 201"
                                         />
                                     </div>
                                     <div>
-                                        <Label htmlFor="due_date">Due Date</Label>
+                                        <Label htmlFor="due_date">Due Date & Time *</Label>
                                         <Input
                                             id="due_date"
                                             type="datetime-local"
@@ -194,7 +213,7 @@ export default function Dashboard({ assignments, stats }: DashboardProps) {
                                             min="0.1"
                                             value={data.estimated_hours}
                                             onChange={(e) => setData('estimated_hours', e.target.value)}
-                                            placeholder="e.g., 2.5"
+                                            placeholder="e.g., 3.5"
                                         />
                                     </div>
                                 </div>
@@ -206,27 +225,30 @@ export default function Dashboard({ assignments, stats }: DashboardProps) {
                                         onChange={(e) => setData('priority_level', e.target.value as 'critical' | 'high' | 'medium' | 'low')}
                                         className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
                                     >
-                                        <option value="low">Low</option>
-                                        <option value="medium">Medium</option>
-                                        <option value="high">High</option>
-                                        <option value="critical">Critical</option>
+                                        <option value="low">🟢 Low Priority</option>
+                                        <option value="medium">🟡 Medium Priority</option>
+                                        <option value="high">🟠 High Priority</option>
+                                        <option value="critical">🔴 Critical Priority</option>
                                     </select>
                                 </div>
-                                <Button type="submit" disabled={processing}>
-                                    {processing ? 'Creating...' : 'Create Assignment'}
+                                <Button type="submit" disabled={processing} className="w-full">
+                                    {processing ? 'Creating...' : '✨ Create Assignment'}
                                 </Button>
                             </form>
                         </CardContent>
                     )}
                 </Card>
 
-                {/* Assignments List */}
+                {/* Top Priority Assignments */}
                 <Card>
                     <CardHeader>
                         <div className="flex items-center justify-between">
-                            <CardTitle>Your Assignments</CardTitle>
+                            <CardTitle className="flex items-center gap-2">
+                                <span>🎯</span>
+                                Your Top Priority Assignments
+                            </CardTitle>
                             <Button variant="outline" asChild>
-                                <a href={route('assignments.index')}>View All</a>
+                                <a href={route('assignments.index')}>View All Assignments</a>
                             </Button>
                         </div>
                     </CardHeader>
@@ -234,54 +256,59 @@ export default function Dashboard({ assignments, stats }: DashboardProps) {
                         {assignments?.data?.length > 0 ? (
                             <div className="space-y-4">
                                 {assignments.data.slice(0, 5).map((assignment) => (
-                                    <div key={assignment.id} className="space-y-2 rounded-lg border p-4">
+                                    <div key={assignment.id} className="space-y-3 rounded-lg border p-4 transition-shadow hover:shadow-md">
                                         <div className="flex items-start justify-between">
                                             <div className="flex-1">
                                                 <h3 className="text-lg font-semibold">{assignment.title}</h3>
                                                 {assignment.subject && (
-                                                    <p className="text-sm text-gray-600 dark:text-gray-400">{assignment.subject}</p>
+                                                    <p className="text-sm font-medium text-blue-600 dark:text-blue-400">{assignment.subject}</p>
                                                 )}
-                                                <p className="text-sm text-gray-500">
-                                                    Due: {new Date(assignment.due_date).toLocaleDateString()} at{' '}
-                                                    {new Date(assignment.due_date).toLocaleTimeString()}
+                                                <p className="mt-1 text-sm text-gray-500">
+                                                    📅 Due: {new Date(assignment.due_date).toLocaleDateString()} at{' '}
+                                                    {new Date(assignment.due_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                                 </p>
                                                 {assignment.estimated_hours && (
-                                                    <p className="text-sm text-gray-500">Estimated: {assignment.estimated_hours} hours</p>
+                                                    <p className="text-sm text-gray-500">⏱️ Estimated: {assignment.estimated_hours} hours</p>
                                                 )}
                                             </div>
                                             <div className="flex flex-col items-end space-y-2">
-                                                <Badge className={getUrgencyColor(assignment.urgency_level)}>{assignment.urgency_level}</Badge>
+                                                <Badge className={getUrgencyColor(assignment.urgency_level)}>
+                                                    {assignment.urgency_level.replace('_', ' ')}
+                                                </Badge>
                                                 <div className="flex items-center space-x-2">
                                                     <div className={`h-3 w-3 rounded-full ${getPriorityColor(assignment.priority_level)}`}></div>
                                                     <span className="text-sm font-medium">Score: {assignment.priority_score}</span>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="flex items-center justify-between">
+                                        <div className="flex items-center justify-between border-t pt-2">
                                             <div className="flex items-center space-x-4">
                                                 <select
                                                     value={assignment.status}
                                                     onChange={(e) => updateStatus(assignment.id, e.target.value)}
-                                                    className="rounded-md border border-gray-300 px-2 py-1 text-sm"
+                                                    className="rounded-md border border-gray-300 bg-white px-2 py-1 text-sm dark:bg-gray-800"
                                                 >
-                                                    <option value="not_started">Not Started</option>
-                                                    <option value="in_progress">In Progress</option>
-                                                    <option value="completed">Completed</option>
+                                                    <option value="not_started">📋 Not Started</option>
+                                                    <option value="in_progress">🔄 In Progress</option>
+                                                    <option value="completed">✅ Completed</option>
                                                 </select>
                                                 <span className="text-sm text-gray-500">
-                                                    {assignment.is_overdue ? 'Overdue!' : `${assignment.days_remaining} days left`}
+                                                    {assignment.is_overdue ? '❌ Overdue!' : `⏰ ${assignment.days_remaining} days left`}
                                                 </span>
                                             </div>
                                             <Button variant="ghost" size="sm" asChild>
-                                                <a href={route('assignments.show', assignment.id)}>View</a>
+                                                <a href={route('assignments.show', assignment.id)}>View Details</a>
                                             </Button>
                                         </div>
                                     </div>
                                 ))}
                             </div>
                         ) : (
-                            <div className="py-8 text-center text-gray-500">
-                                <p>No assignments yet. Create your first assignment to get started!</p>
+                            <div className="py-12 text-center">
+                                <div className="mb-4 text-6xl">📚</div>
+                                <h3 className="mb-2 text-lg font-medium text-gray-900 dark:text-white">Ready to start tracking?</h3>
+                                <p className="mb-4 text-gray-500">Create your first assignment to get started with smart deadline tracking!</p>
+                                <Button onClick={() => setShowQuickAdd(true)}>📝 Create Your First Assignment</Button>
                             </div>
                         )}
                     </CardContent>
