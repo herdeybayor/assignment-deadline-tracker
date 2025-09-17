@@ -1,6 +1,6 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "assignment-deadline-tracker",
+    "name": "sherif/assignment-deadline-tracker",
     "type": "project",
     "description": "Assignment Deadline Tracker - A smart deadline management system for students.",
     "keywords": [
